@@ -122,7 +122,13 @@ public class CourseDaoDB implements CourseDao{
 
     @Override
     public List<Course> getCoursesForStudent(Student student) {
-        return null;
+
+        final String SELECT_COURSES_FOR_STUDENT = "SELECT c.* FROM course c JOIN "
+                + "course_student cs ON cs.courseId = c.Id WHERE cs.studentId = ?";
+        List<Course> courses = jdbc.query(SELECT_COURSES_FOR_STUDENT,
+                new CourseMapper(), student.getId());
+        associateTeacherAndStudents(courses);
+        return courses;
     }
     public static final class CourseMapper implements RowMapper<Course> {
 
